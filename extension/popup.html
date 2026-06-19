@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 280px;
+    background: #0a0a0f;
+    color: #e8e8f0;
+    font-family: 'Google Sans', Roboto, sans-serif;
+    padding: 20px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #6c63ff, #9b6fff);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .title { font-size: 15px; font-weight: 600; }
+  .version { font-size: 10px; color: #6b6b80; margin-top: 1px; }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #00e5a0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+  .status-text { font-size: 12px; color: #00e5a0; }
+
+  .info-list { margin-bottom: 16px; }
+  .info-item {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: #6b6b80;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .info-item span:first-child { flex-shrink: 0; }
+  .info-item strong { color: #e8e8f0; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #2a2a3a;
+    margin-bottom: 12px;
+  }
+
+  .footer {
+    font-size: 10px;
+    color: #6b6b80;
+    text-align: center;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="icon">⚡</div>
+  <div>
+    <div class="title">Form AutoFill</div>
+    <div class="version">v1.0 · SMVEC ECE</div>
+  </div>
+</div>
+
+<div class="status-row">
+  <div class="dot"></div>
+  <div class="status-text">Active on all Google Forms</div>
+</div>
+
+<div class="info-list">
+  <div class="info-item">
+    <span>📋</span>
+    <span><strong>Page 1</strong> — fill student details manually</span>
+  </div>
+  <div class="info-item">
+    <span>⚡</span>
+    <span><strong>Page 2+</strong> — auto-filled, last option selected</span>
+  </div>
+  <div class="info-item">
+    <span>✋</span>
+    <span><strong>Elective pages</strong> — pauses so you can pick your subject</span>
+  </div>
+  <div class="info-item">
+    <span>✅</span>
+    <span><strong>Submit</strong> — confirm popup before final submission</span>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="footer">
+  Opens automatically on every Google Form.<br>
+  No setup needed — just open the form!
+</div>
+
+</body>
+</html>
