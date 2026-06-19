@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form AutoFill — SMVEC</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#0a0a0f;--surface:#13131a;--border:#2a2a3a;
+    --accent:#6c63ff;--green:#00e5a0;--amber:#ffb347;
+    --text:#e8e8f0;--muted:#6b6b80;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+  }
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(108,99,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  .glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(108,99,255,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0;}
+  .wrap{position:relative;z-index:1;width:100%;max-width:600px;padding:3rem 1.5rem 4rem;}
+  .badge-label{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--accent);background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.3);padding:5px 14px;border-radius:999px;display:inline-block;margin-bottom:1.5rem;text-transform:uppercase;}
+  h1{font-family:var(--mono);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;line-height:1.15;margin-bottom:0.75rem;background:linear-gradient(135deg,#fff 0%,#a09fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .subtitle{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:2.5rem;max-width:420px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;margin-bottom:1.5rem;}
+  .section-label{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;}
+  .tag{display:inline-block;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;}
+  .tag-once{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.3);}
+  .tag-every{background:rgba(108,99,255,0.12);color:var(--accent);border:1px solid rgba(108,99,255,0.3);}
+
+  /* Bookmarklet button */
+  .bm-wrap{text-align:center;margin:1rem 0;}
+  #bookmarklet-btn{
+    display:inline-block;
+    background:linear-gradient(135deg,var(--accent),#9b6fff);
+    color:#fff;text-decoration:none;
+    padding:16px 32px;border-radius:14px;
+    font-family:var(--mono);font-size:15px;font-weight:700;
+    cursor:grab;
+    border:2px dashed rgba(255,255,255,0.35);
+    user-select:none;
+    transition:transform 0.15s,opacity 0.15s;
+  }
+  #bookmarklet-btn:hover{opacity:0.88;transform:scale(1.03);}
+  .drag-hint{font-size:13px;color:var(--muted);line-height:1.6;text-align:center;margin-bottom:1rem;}
+  .drag-hint strong{color:var(--text);}
+
+  .info-box{background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-radius:12px;padding:1rem 1.25rem;margin-top:1rem;font-size:13px;color:var(--green);line-height:1.7;}
+
+  /* GitHub setup steps */
+  .gh-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .gh-step:last-child{margin-bottom:0;}
+  .gh-num{min-width:26px;height:26px;border-radius:50%;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--accent);flex-shrink:0;margin-top:2px;}
+  .gh-text{font-size:13px;color:var(--muted);line-height:1.5;}
+  .gh-text strong{color:var(--text);}
+  .gh-text code{background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:4px;font-family:var(--mono);font-size:11px;color:var(--accent);}
+
+  /* Use steps */
+  .step-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px;}
+  .step-row:last-child{margin-bottom:0;}
+  .step-num{min-width:30px;height:30px;border-radius:50%;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--accent);flex-shrink:0;margin-top:2px;}
+  .step-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;}
+  .step-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="wrap">
+
+  <div class="badge-label">SMVEC — ECE Dept</div>
+  <h1>Form<br>AutoFill</h1>
+  <p class="subtitle">Drag the button to your bookmarks bar. Click it once on any form — it auto-fills every page till submission.</p>
+
+  <!-- ── Step 1: Bookmarklet ── -->
+  <div class="card">
+    <div class="section-label">Step 1 — drag to bookmarks bar <span class="tag tag-once">do once</span></div>
+    <p class="drag-hint">
+      <strong>Drag the button below</strong> to your bookmarks bar<br>
+      (Press <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:11px">Ctrl+Shift+B</code> to show the bar first)
+    </p>
+    <div class="bm-wrap">
+      <a id="bookmarklet-btn" href="#">⚡ AutoFill Form</a>
+    </div>
+    <div class="info-box">
+      ✅ Click this bookmark <strong>once</strong> when you open a form<br>
+      ✅ It watches ALL pages automatically — no clicking per page<br>
+      ✅ Pauses on elective pages so you can pick your subject<br>
+      ✅ Shows a confirm popup before final submit
+    </div>
+  </div>
+
+  <!-- ── Step 2: How to use ── -->
+  <div class="card">
+    <div class="section-label" style="margin-bottom:1.25rem">Step 2 — every time you fill a form <span class="tag tag-every">every time</span></div>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Open the Google Form</div>
+        <div class="step-desc">Open the form link from your teacher as normal.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Click ⚡ AutoFill Form in bookmarks bar</div>
+        <div class="step-desc">An orange badge appears at the bottom-right. Script is now watching the entire form.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Fill page 1 → click Next</div>
+        <div class="step-desc">Enter name, roll number manually. Click Next — script takes over from page 2.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Every page fills automatically</div>
+        <div class="step-desc">No more clicking per page. On elective pages a popup asks you to pick your subject, then continues automatically.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GitHub setup instructions ── -->
+  <div class="card">
+    <div class="section-label" style="margin-bottom:1.25rem">For the admin — host on GitHub Pages</div>
+    <div class="gh-step">
+      <div class="gh-num">1</div>
+      <div class="gh-text">Go to <strong>github.com</strong> → create a new repo named <code>form-autofill</code></div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">2</div>
+      <div class="gh-text">Upload <code>autofill.js</code> and rename this file to <code>index.html</code> and upload both</div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">3</div>
+      <div class="gh-text">Go to <strong>Settings → Pages → Branch: main → Save</strong></div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">4</div>
+      <div class="gh-text">Update the <code>SCRIPT_URL</code> in this file to <code>https://YOURUSERNAME.github.io/form-autofill/autofill.js</code></div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">5</div>
+      <div class="gh-text">Share <code>https://YOURUSERNAME.github.io/form-autofill</code> with all students via WhatsApp</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CHANGE THIS to your GitHub Pages URL after hosting ──────
+const SCRIPT_URL = 'https://YOURUSERNAME.github.io/form-autofill/autofill.js';
+
+// The bookmarklet is a tiny loader — it just fetches autofill.js and runs it
+// This means: no size limit, async/await works perfectly, updates apply instantly
+function buildBookmarklet() {
+  const loader = `(function(){
+    if(window.__afRunning){alert('AutoFill already running!');return;}
+    var s=document.createElement('script');
+    s.src='${SCRIPT_URL}?v='+Date.now();
+    document.head.appendChild(s);
+  })();`;
+  return 'javascript:' + encodeURIComponent(loader);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bookmarklet-btn').href = buildBookmarklet();
+});
+</script>
+</body>
+</html>
